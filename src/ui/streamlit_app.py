@@ -5,7 +5,6 @@ Streamlit UI for Cats vs Dogs Classifier.
 import requests
 import streamlit as st
 from PIL import Image
-import io
 
 import os
 API_URL = os.getenv("API_URL", "http://localhost:8000")
@@ -50,19 +49,17 @@ if uploaded_file is not None:
     if st.button("🔍 Classify", use_container_width=True):
         with st.spinner("Classifying..."):
             try:
-                img_bytes = io.BytesIO()
-                image.save(img_bytes, format=image.format or "JPEG")
-                img_bytes.seek(0)
+                file_bytes = uploaded_file.getvalue()
 
                 response = requests.post(
                     f"{API_URL}/predict",
-                    files={"file": (uploaded_file.name, img_bytes, uploaded_file.type)},
+                    files={"file": (uploaded_file.name, file_bytes, uploaded_file.type)},
                     timeout=30,
                 )
 
                 if response.status_code == 200:
                     result = response.json()
-                    predicted_class = result["class_name"]
+                    predicted_class = result["class"]
                     confidence = result["confidence"]
                     dog_prob = result["dog_probability"]
                     cat_prob = result["cat_probability"]
