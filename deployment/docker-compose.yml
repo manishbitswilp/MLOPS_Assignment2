@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  classifier:
+    image: ${DOCKER_USERNAME}/cats-dogs-classifier:latest
+    container_name: cats-dogs-classifier
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_PATH=/app/models/cats_dogs_classifier.h5
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.example.description=Cats vs Dogs Image Classifier"
+      - "com.example.version=1.0.0"
+
+networks:
+  default:
+    name: mlops-network
