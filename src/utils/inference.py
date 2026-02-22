@@ -84,13 +84,15 @@ def preprocess_image(image_bytes: bytes, img_size: Tuple[int, int] = (224, 224))
     Returns:
         Preprocessed image array with shape (1, height, width, 3)
     """
-    # Decode image from bytes
-    img = tf.image.decode_image(image_bytes, channels=3)
-    img = tf.image.resize(img, img_size)
-    img = img / 255.0  # Normalize to [0, 1]
-    img = tf.expand_dims(img, axis=0)  # Add batch dimension
+    # Decode image via PIL (supports JPEG, PNG, WEBP, BMP, etc.)
+    from PIL import Image as PILImage
+    import io as _io
+    pil_img = PILImage.open(_io.BytesIO(image_bytes)).convert("RGB")
+    pil_img = pil_img.resize((img_size[1], img_size[0]))
+    img = np.array(pil_img, dtype=np.float32) / 255.0
+    img = np.expand_dims(img, axis=0)  # Add batch dimension
 
-    return img.numpy()
+    return img
 
 
 def predict(model: tf.keras.Model, image: np.ndarray) -> Dict[str, float]:
