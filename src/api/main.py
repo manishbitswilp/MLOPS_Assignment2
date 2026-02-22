@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="Cats vs Dogs Classifier API",
     description="Binary image classification API for cats and dogs",
-    version="1.0.0"
+    version="1.0.1"
 )
 
 # Global model variable
