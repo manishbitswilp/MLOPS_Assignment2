@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: default
+
+resources:
+  - deployment.yaml
+  - service.yaml
+
+commonLabels:
+  project: cats-dogs-classifier
+  managed-by: mlops-pipeline
+
+images:
+  - name: ${DOCKER_USERNAME}/cats-dogs-classifier
+    newTag: latest
+
+configMapGenerator:
+  - name: classifier-config
+    literals:
+      - MODEL_PATH=/app/models/cats_dogs_classifier.h5
+      - IMG_SIZE=224
+
+replicas:
+  - name: cats-dogs-classifier
+    count: 2
