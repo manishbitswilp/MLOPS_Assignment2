@@ -1,0 +1,36 @@
+stages:
+  download_data:
+    cmd: python src/data/download.py
+    deps:
+      - src/data/download.py
+    outs:
+      - data/processed:
+          cache: true
+          persist: false
+
+  preprocess_data:
+    cmd: python src/data/preprocess.py
+    deps:
+      - src/data/preprocess.py
+      - data/processed
+    outs:
+      - data/preprocessing_metadata.json:
+          cache: false
+
+  train_model:
+    cmd: python src/models/train.py
+    deps:
+      - src/models/train.py
+      - src/models/baseline_cnn.py
+      - data/processed
+    params:
+      - train.learning_rate
+      - train.batch_size
+      - train.epochs
+    outs:
+      - models/cats_dogs_classifier.h5:
+          cache: true
+          persist: true
+    metrics:
+      - models/metrics.json:
+          cache: false

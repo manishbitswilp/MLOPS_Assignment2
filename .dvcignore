@@ -1,0 +1,17 @@
+# Add patterns of files dvc should ignore, which could be
+# large files, temporary files, or files that you don't want to track
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
