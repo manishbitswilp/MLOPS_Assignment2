@@ -1,0 +1,4 @@
+# Ignore all model files
+*
+# Except this .gitignore file
+!.gitignore

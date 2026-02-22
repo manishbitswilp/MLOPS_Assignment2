@@ -1,0 +1,6 @@
+# Ignore all contents of data directory
+*
+# Except this .gitignore file
+!.gitignore
+# And DVC configuration
+!.dvc
