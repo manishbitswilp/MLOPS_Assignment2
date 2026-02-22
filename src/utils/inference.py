@@ -2,7 +2,9 @@
 Utility functions for model inference.
 """
 
+import json
 import numpy as np
+import h5py
 import tensorflow as tf
 from pathlib import Path
 from typing import Tuple, Dict
@@ -21,9 +23,53 @@ def load_model(model_path: str) -> tf.keras.Model:
     if not Path(model_path).exists():
         raise FileNotFoundError(f"Model file not found: {model_path}")
 
-    model = tf.keras.models.load_model(model_path)
-    print(f"Model loaded from: {model_path}")
+    # Keras 3 layer kwargs unknown to Keras 2
+    _UNKNOWN_LAYER_KWARGS = {'quantization_config', 'lora_rank'}
 
+    def _patch_config(cfg):
+        """Recursively convert Keras 3 config idioms to Keras 2 equivalents."""
+        if isinstance(cfg, list):
+            return [_patch_config(v) for v in cfg]
+        if not isinstance(cfg, dict):
+            return cfg
+
+        # DTypePolicy objects -> plain dtype string (e.g. 'float32')
+        if cfg.get('class_name') == 'DTypePolicy':
+            return cfg.get('config', {}).get('name', 'float32')
+
+        # Keras 3 serialized objects have 'module' and 'registered_name';
+        # Keras 2 only uses 'class_name' and 'config' — strip the extras.
+        if 'class_name' in cfg and 'module' in cfg:
+            cfg = {'class_name': cfg['class_name'], 'config': cfg.get('config', {})}
+
+        # InputLayer: 'batch_shape' -> 'batch_input_shape', drop 'optional'
+        if cfg.get('class_name') == 'InputLayer':
+            inner = dict(cfg.get('config', {}))
+            inner.pop('optional', None)
+            if 'batch_shape' in inner:
+                inner['batch_input_shape'] = inner.pop('batch_shape')
+            cfg = dict(cfg)
+            cfg['config'] = _patch_config(inner)
+            return cfg
+
+        patched = {k: _patch_config(v) for k, v in cfg.items()}
+
+        # Drop Keras 3 only layer kwargs from the inner 'config' dict
+        if 'config' in patched and isinstance(patched['config'], dict):
+            for key in _UNKNOWN_LAYER_KWARGS:
+                patched['config'].pop(key, None)
+
+        return patched
+
+    with h5py.File(model_path, 'r') as f:
+        raw_config = f.attrs['model_config']
+        model_config = json.loads(raw_config)
+
+    patched_config = _patch_config(model_config)
+    model = tf.keras.models.model_from_json(json.dumps(patched_config))
+    model.load_weights(model_path)
+
+    print(f"Model loaded from: {model_path}")
     return model
 
 

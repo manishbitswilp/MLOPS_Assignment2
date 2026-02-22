@@ -28,21 +28,27 @@ class TestModelLoading:
         with pytest.raises(FileNotFoundError):
             load_model("nonexistent_model.h5")
 
-    @patch('tensorflow.keras.models.load_model')
-    def test_load_model_success(self, mock_load):
+    def test_load_model_success(self):
         """Test successful model loading."""
-        # Create a mock model
-        mock_model = MagicMock()
-        mock_load.return_value = mock_model
+        import json
+        import h5py as real_h5py
 
-        # Create a temporary file to simulate model existence
+        mock_model = MagicMock()
+        fake_config = json.dumps({'class_name': 'Sequential', 'config': {'layers': []}})
+
+        mock_file = MagicMock()
+        mock_file.__enter__ = MagicMock(return_value=mock_file)
+        mock_file.__exit__ = MagicMock(return_value=False)
+        mock_file.attrs = {'model_config': fake_config}
+
         with tempfile.NamedTemporaryFile(suffix='.h5', delete=False) as tmp:
             tmp_path = tmp.name
 
         try:
-            model = load_model(tmp_path)
-            assert model is not None
-            mock_load.assert_called_once_with(tmp_path)
+            with patch.object(real_h5py, 'File', return_value=mock_file), \
+                 patch.object(tf.keras.models, 'model_from_json', return_value=mock_model):
+                model = load_model(tmp_path)
+                assert model is not None
         finally:
             Path(tmp_path).unlink()
 
