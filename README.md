@@ -454,23 +454,8 @@ Model not loaded. Check:
   - Performance tracking
   - Comprehensive documentation
 
-### Demo Video Instructions
 
-Record a 5-minute demo showing:
-
-1. **Code Change**: Make a small modification (e.g., update hyperparameter)
-2. **Git Push**: Commit and push to GitHub
-3. **CI Pipeline**: Show GitHub Actions running (tests, Docker build)
-4. **CD Pipeline**: Show automatic deployment
-5. **Verification**:
-   ```bash
-   kubectl get pods
-   curl <service-url>/health
-   curl -X POST -F "file=@test_image.jpg" <service-url>/predict
-   ```
-6. **Monitoring**: Show logs with prediction captured
-
-## 📚 References
+## References
 
 - [TensorFlow Documentation](https://www.tensorflow.org/)
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
@@ -479,21 +464,15 @@ Record a 5-minute demo showing:
 - [DVC Documentation](https://dvc.org/doc)
 - [MLflow Documentation](https://mlflow.org/docs/latest/index.html)
 
-## 📄 License
+## License
 
 This project is for educational purposes as part of an MLOps assignment.
 
-## 👥 Author
+## Author
 
-[Your Name]
+Group 128
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Dataset: [Dogs vs. Cats on Kaggle](https://www.kaggle.com/datasets/salader/dogs-vs-cats)
 - Assignment designed for MLOps course
-
----
-
-**Last Updated**: 2024
-
-For questions or issues, please open an issue in the repository.
