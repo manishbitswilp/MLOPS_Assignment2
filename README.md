@@ -47,7 +47,7 @@ Assignment2/
 └── params.yaml           # Hyperparameters
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -102,7 +102,7 @@ git add data/processed.dvc .dvc/config
 git commit -m "Initialize DVC tracking"
 ```
 
-## 📊 Model Training
+## Model Training
 
 ### Train the baseline model
 
@@ -182,7 +182,7 @@ Interactive API docs available at:
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Build Docker image
 
@@ -203,7 +203,7 @@ docker run -p 8000:8000 cats-dogs-classifier:latest
 docker-compose -f deployment/docker-compose.yml up -d
 ```
 
-## ☸️ Kubernetes Deployment
+## Kubernetes Deployment
 
 ### Prerequisites
 
@@ -268,7 +268,7 @@ kubectl scale deployment cats-dogs-classifier --replicas=3
 kubectl logs -l app=cats-dogs-classifier --tail=100 -f
 ```
 
-## 🔄 CI/CD Pipeline
+## CI/CD Pipeline
 
 ### CI Pipeline (`.github/workflows/ci.yml`)
 
@@ -299,7 +299,7 @@ Configure these secrets in your GitHub repository:
 cat ~/.kube/config | base64
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Run unit tests
 
@@ -321,7 +321,7 @@ View coverage report at `htmlcov/index.html`.
 python scripts/smoke_test.py --url http://localhost:8000
 ```
 
-## 📈 Monitoring & Performance Tracking
+## Monitoring & Performance Tracking
 
 ### View API logs
 
@@ -356,7 +356,7 @@ This generates:
 - Latency statistics
 - Metrics saved to `models/performance/`
 
-## 🏗️ Architecture
+## Architecture
 
 ### Model Architecture
 
@@ -386,7 +386,7 @@ User Request → LoadBalancer → Kubernetes Service
                               Pod (FastAPI + Model)
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Model file not found
 
@@ -426,7 +426,7 @@ Model not loaded. Check:
 - `MODEL_PATH` environment variable is correct
 - Container logs for loading errors
 
-## 📝 Assignment Deliverables
+## Assignment Deliverables
 
 ### Milestone Checklist
 
