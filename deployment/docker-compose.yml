@@ -20,6 +20,19 @@ services:
       - "com.example.description=Cats vs Dogs Image Classifier"
       - "com.example.version=1.0.0"
 
+  ui:
+    image: ${DOCKER_USERNAME}/cats-dogs-classifier:latest
+    container_name: cats-dogs-ui
+    command: streamlit run src/ui/streamlit_app.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - API_URL=http://classifier:8000
+    depends_on:
+      - classifier
+    restart: unless-stopped
+
 networks:
   default:
     name: mlops-network
